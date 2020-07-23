@@ -9,6 +9,7 @@ public class DetalleProducto implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Lob
     private Producto producto;
     private int cantidad;
 

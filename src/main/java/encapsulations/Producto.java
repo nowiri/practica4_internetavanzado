@@ -21,6 +21,7 @@ public class Producto implements Serializable {
     String descripcion;
 
     @OneToMany(mappedBy = "producto", fetch = FetchType.EAGER)
+    @Lob
     private List<Foto> fotos = new ArrayList<>();
 
     public Producto(){
