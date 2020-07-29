@@ -29,7 +29,8 @@ public class Main {
         DBStart.getInstancia().init();
 
         //DEFAULT USER
-        UsuarioServices.getInstancia().crear(new Usuario("admin","admin","admin"));
+        Usuario admin = new Usuario("admin","admin","admin");
+        UsuarioServices.getInstancia().editar(admin);
 
         //for(int i=0;i<26;i++){
         //    ProductoServices.getInstancia().crear(new Producto("nombre"+i,75,"DEFAULT"));
