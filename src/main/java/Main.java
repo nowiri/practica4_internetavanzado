@@ -31,9 +31,9 @@ public class Main {
         //DEFAULT USER
         UsuarioServices.getInstancia().crear(new Usuario("admin","admin","admin"));
 
-        for(int i=0;i<26;i++){
-            ProductoServices.getInstancia().crear(new Producto("nombre"+i,75,"DEFAULT"));
-        }
+        //for(int i=0;i<26;i++){
+        //    ProductoServices.getInstancia().crear(new Producto("nombre"+i,75,"DEFAULT"));
+        //}
 
 
         /***
