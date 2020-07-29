@@ -4,6 +4,10 @@ import io.javalin.plugin.rendering.JavalinRenderer;
 import io.javalin.plugin.rendering.template.JavalinThymeleaf;
 import services.*;
 
+import javax.naming.CompositeName;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
 import java.io.IOException;
 import java.util.*;
 import java.text.SimpleDateFormat;
@@ -24,33 +28,18 @@ public class Main {
         //DATABASE INIT
         DBStart.getInstancia().init();
 
-        //PERSIST USER
+        //DEFAULT USER
         UsuarioServices.getInstancia().crear(new Usuario("admin","admin","admin"));
 
-        //TEST PRODUCTOS
+        for(int i=0;i<26;i++){
+            ProductoServices.getInstancia().crear(new Producto("nombre"+i,75,"DEFAULT"));
+        }
 
-       /* Producto pr1 = new Producto("Leche",35);
-        Producto pr2 = new Producto("Huevo",5);
-
-        ProductoServices.getInstancia().crear(pr1);
-        ProductoServices.getInstancia().crear(pr2);
-
-        DetalleProducto dp1 = new DetalleProducto(pr1,5);
-        DetalleProducto dp2 = new DetalleProducto(pr2,4);
-
-        DetalleProductoServices.getInstancia().crear(dp1);
-        DetalleProductoServices.getInstancia().crear(dp2);
-
-        List<DetalleProducto> DPS = new ArrayList<>();
-        DPS.add(dp1);
-        DPS.add(dp2);
-
-        VentaServices.getInstancia().crear(new Venta("fecha","Jesus",DPS)); */
 
         /***
          * default endpoint
          */
-        app.get("/", ctx -> ctx.redirect("/productos"));
+        app.get("/", ctx -> ctx.redirect("/productos/1"));
 
         /**
          * Login endpoints and logic
@@ -93,11 +82,36 @@ public class Main {
          * Products list logic using Thymeleaf
          */
 
-        app.get("/productos", ctx -> {
+        app.get("/productos/:page", ctx -> {
+            EntityManager em = ProductoServices.getInstancia().getEntityManager();
+            String page = ctx.pathParam("page",String.class).get();
             //get product list from database
-            List<Producto> lista = ProductoServices.getInstancia().findAll();
+            int pageSize = 10;
+            String countQ = "Select count (p.id) from Producto p";
+            Query countQuery = em.createQuery(countQ);
+            Long countResults = (Long) countQuery.getSingleResult();
+
+            int pageCant = (int) (Math.ceil(countResults / pageSize));
+
+            int lastPageNumber;
+            if(page==""){
+                lastPageNumber = 1;
+            }else{
+                lastPageNumber = Integer.valueOf(page);
+            }
+
+            ctx.sessionAttribute("currentp", lastPageNumber);
+
+            Query query = em.createQuery("from Producto");
+            query.setFirstResult((lastPageNumber - 1) * pageSize);
+            query.setMaxResults(pageSize);
+            List<Producto> lista = query.getResultList();
+
+            //List<Producto> lista = ProductoServices.getInstancia().findAll();
+
 
             Map<String, Object> modelo = new HashMap<>();
+            modelo.put("pageCant",pageCant);
             modelo.put("lista",lista);
 
             //IF THERE'S NO LOGGED USER, THERE ARE NO ITEMS IN THE CAR.
@@ -246,7 +260,7 @@ public class Main {
                 }
 
             }
-            ctx.redirect("/productos");
+            ctx.redirect("/productos/"+ctx.sessionAttribute("currentp"));
         });
 
         app.before("/carrito", ctx -> {
@@ -338,6 +352,58 @@ public class Main {
                     System.out.println("Producto id "+dp.getProducto().getId()+"Cantidad "+dp.getCantidad());
                 }
             }*/
+        });
+
+        app.get("/prodInfo/:id",ctx ->{
+
+            int id = ctx.pathParam("id",Integer.class).get();
+            Map<String, Object> modelo = new HashMap<>();
+            List<Comentario> lista;
+            Producto producto = ProductoServices.getInstancia().find(id);
+            //getting comentarioservices entity manager
+
+            EntityManager em = ComentarioServices.getInstancia().getEntityManager();
+
+            String queryString = "SELECT c FROM Comentario c " +
+                    "WHERE c.producto.id = :id";
+
+            Query query = em.createQuery(queryString);
+
+            query.setParameter("id", id);
+
+            lista = query.getResultList();
+
+            modelo.put("lista", lista);
+            modelo.put("producto", producto);
+            modelo.put("cant",lista.size());
+            modelo.put("usuario",ctx.sessionAttribute("user"));
+
+            ctx.render("/templates/vistaComentario.html",modelo);
+
+        });
+
+        app.post("/newComentario",ctx ->{
+
+            int id = ctx.formParam("id", Integer.class).get();
+            Producto producto = ProductoServices.getInstancia().find(id);
+            Usuario usuario = UsuarioServices.getInstancia().find(ctx.sessionAttribute("user"));
+            String content = ctx.formParam("contenido", String.class).get();
+
+            Comentario comentario = new Comentario(usuario,producto,content);
+
+            ComentarioServices.getInstancia().crear(comentario);
+
+            ctx.redirect("/prodInfo/"+id);
+
+        });
+
+        app.post("/eliminarComentario/:id", ctx ->{
+            //GETTING ID
+            int id = ctx.pathParam("id",Integer.class).get();
+            int idProd = ctx.formParam("idProd", Integer.class).get();
+            //REMOVING FROM DATABASE
+            ComentarioServices.getInstancia().eliminar(id);
+            ctx.redirect("/prodInfo/"+idProd);
         });
 
         }

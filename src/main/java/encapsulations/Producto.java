@@ -24,6 +24,7 @@ public class Producto implements Serializable {
     @Lob
     private List<Foto> fotos = new ArrayList<>();
 
+
     public Producto(){
     }
 
@@ -69,5 +70,13 @@ public class Producto implements Serializable {
 
     public void setFotos(List<Foto> fotos) {
         this.fotos = fotos;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }
