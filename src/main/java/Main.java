@@ -210,6 +210,7 @@ public class Main {
             modelo.put("id",id);
             modelo.put("nombre",p.getNombre());
             modelo.put("precio",p.getPrecio());
+            modelo.put("descripcion",p.getDescripcion());
 
             //SEND TO TEMPLATE
             ctx.render("/templates/editarProducto.html",modelo);
