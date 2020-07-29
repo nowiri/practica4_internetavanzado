@@ -20,7 +20,7 @@ public class Producto implements Serializable {
     float precio;
     String descripcion;
 
-    @OneToMany(mappedBy = "producto", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "producto", fetch = FetchType.EAGER)
     @Lob
     private List<Foto> fotos = new ArrayList<>();
 
