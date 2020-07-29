@@ -30,13 +30,17 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
+            <li class="navbar-nav">
+
                 <a class="nav-item nav-link active" href="/">Comprar <span class="sr-only">(current)</span></a>
                 <a class="nav-item nav-link" href="/ventasRealizadas">Ventas Realizadas</a>
                 <a class="nav-item nav-link" href="/gestionProd">Administrar productos</a>
                 <a class="nav-item nav-link" href="/login.html">Iniciar Sesion</a>
                 <a class="nav-item nav-link" href="/carrito">Carrito</a>
                 <a class="nav-item"><span class="badge badge-danger navbar-badge" th:text="${size}"> 3</span></a>
+
+                <li class="nav navbar-nav flex-row justify-content-between ml-auto"><span th:text="${user == null} ? 'No hay sesion iniciada.' :  'Usuario: '+${user}"></span></li>
+
 
             </div>
         </div>

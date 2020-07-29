@@ -114,6 +114,7 @@ public class Main {
             Map<String, Object> modelo = new HashMap<>();
             modelo.put("pageCant",pageCant);
             modelo.put("lista",lista);
+            modelo.put("user",ctx.sessionAttribute("user"));
 
             //IF THERE'S NO LOGGED USER, THERE ARE NO ITEMS IN THE CAR.
             if(ctx.sessionAttribute("user")== null){
@@ -151,6 +152,7 @@ public class Main {
                Map<String, Object> modelo = new HashMap<>();
                modelo.put("lista",lista);
                modelo.put("size",((CarroCompra)ctx.sessionAttribute("carrito")).cartSize());
+               modelo.put("user",ctx.sessionAttribute("user"));
                ctx.render("/templates/gestionar_producto.html",modelo);
            }else{
                //USER IS NOT ADMIN
@@ -212,6 +214,7 @@ public class Main {
             modelo.put("nombre",p.getNombre());
             modelo.put("precio",p.getPrecio());
             modelo.put("descripcion",p.getDescripcion());
+            modelo.put("user",ctx.sessionAttribute("user"));
 
             //SEND TO TEMPLATE
             ctx.render("/templates/editarProducto.html",modelo);
@@ -347,6 +350,7 @@ public class Main {
             
             modelo.put("lista",lista);
             modelo.put("size",((CarroCompra)ctx.sessionAttribute("carrito")).getListaProductos().size());
+            modelo.put("user",ctx.sessionAttribute("user"));
 
             ctx.render("/templates/ver_ventas.html",modelo);
 
@@ -383,6 +387,15 @@ public class Main {
 
             ctx.render("/templates/vistaComentario.html",modelo);
 
+        });
+
+        app.before("/newComentario", ctx -> {
+            //VERIFY IS THERE IS AN USER LOGGED
+            if(ctx.sessionAttribute("user") == null){
+                System.out.println("user not found");
+                ctx.redirect("/login.html");
+            }
+            //CONTINUE REQ IS USER IS LOGGED
         });
 
         app.post("/newComentario",ctx ->{
