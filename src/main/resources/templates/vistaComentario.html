@@ -128,7 +128,7 @@
                                 <span th:case="${comentario.usuario.user}">
                                     <form th:action="'/eliminarComentario/'+${comentario.id}" method="post">
                                         <input id="idProd" name="idProd" type="hidden" th:value="${producto.id}">
-                                        <input type="image" src="/imgs/delete.png" alt="Eliminar comentario" />
+                                        <input type="image" src="/imgs/delete.png" width="30" height="30" alt="Eliminar comentario" />
                                     </form>
                                 </span>
 
