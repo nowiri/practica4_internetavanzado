@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Sign up!</title>
+    <title>Editar Producto</title>
     <!-- bootstrap css -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
@@ -28,11 +28,12 @@
             <input type="text" class="form-control" name="precio" placeholder="Precio" required="required" th:value="${precio}">
         </div>
         <div class="form-group">
-            <textarea class="form-control" name="descripcion" placeholder="Descripcion" required="required" th:value="${descripcion}"></textarea>
+            <textarea class="form-control" name="descripcion" placeholder="Descripcion" required="required" th:text="${descripcion}"></textarea>
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block">Actualizar</button>
         </div>
+        <p class="text-center"><a href="/">Cancelar</a></p>
 </div>
 
 </body>

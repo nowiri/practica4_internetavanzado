@@ -221,9 +221,10 @@ public class Main {
             int id = ctx.pathParam("id",Integer.class).get();
             //NEW INFO
             String nombre = ctx.formParam("nombre", String.class).get();
+            String descripcion = ctx.formParam("descripcion", String.class).get();
             float precio = ctx.formParam("precio", Float.class).get();
             //POJO INSTANCE
-            Producto p = new Producto(id,nombre,precio);
+            Producto p = new Producto(id,nombre,precio,descripcion);
             //MERGE
             ProductoServices.getInstancia().editar(p);
 

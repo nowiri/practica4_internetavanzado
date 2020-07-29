@@ -34,10 +34,11 @@ public class Producto implements Serializable {
         this.descripcion = descripcion;
     }
 
-    public Producto(int id, String nombre, float precio) {
+    public Producto(int id, String nombre, float precio, String descripcion) {
         this.id = id;
         this.nombre = nombre;
         this.precio = precio;
+        this.descripcion = descripcion;
     }
 
     public int getId() {
